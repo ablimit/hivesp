@@ -56,6 +56,7 @@ static const char* STRING_TYPE_NAME    = "string";
 static const char* DATE_TYPE_NAME      = "date";
 static const char* DATETIME_TYPE_NAME  = "datetime";
 static const char* TIMESTAMP_TYPE_NAME = "timestamp";
+static const char* GEOMETRY_TYPE_NAME  = "geometry";
 static const char* LIST_TYPE_NAME      = "array";
 static const char* MAP_TYPE_NAME       = "map";
 static const char* STRUCT_TYPE_NAME    = "struct";

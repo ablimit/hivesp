@@ -75,6 +75,8 @@ public class Constants {
 
   public static final String TIMESTAMP_TYPE_NAME = "timestamp";
 
+  public static final String GEOMETRY_TYPE_NAME = "geometry";
+
   public static final String BINARY_TYPE_NAME = "binary";
 
   public static final String LIST_TYPE_NAME = "array";
@@ -103,6 +105,7 @@ public class Constants {
     PrimitiveTypes.add("date");
     PrimitiveTypes.add("datetime");
     PrimitiveTypes.add("timestamp");
+    PrimitiveTypes.add("geometry");
     PrimitiveTypes.add("binary");
   }
 

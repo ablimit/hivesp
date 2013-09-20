@@ -972,6 +972,7 @@ public class ExecDriver extends Task<MapredWork> implements Serializable, Hadoop
 
   @Override
   public void logPlanProgress(SessionState ss) throws IOException {
+    LOG.info("975 in ExecDriver.java");
     ss.getHiveHistory().logPlanProgress(queryPlan);
   }
 }

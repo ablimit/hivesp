@@ -208,6 +208,7 @@ public class DDLTask extends Task<DDLWork> implements Serializable {
   @Override
   public int execute(DriverContext driverContext) {
 
+    LOG.info("211 in DDLTask.java");
     // Create the db
     Hive db;
     try {
@@ -240,6 +241,7 @@ public class DDLTask extends Task<DDLWork> implements Serializable {
 
       CreateTableDesc crtTbl = work.getCreateTblDesc();
       if (crtTbl != null) {
+        LOG.info("244 in DDLTask.java");
         return createTable(db, crtTbl);
       }
 
@@ -3284,6 +3286,7 @@ public class DDLTask extends Task<DDLWork> implements Serializable {
      * types, we will have to use DynamicSerDe instead.
      */
     if (crtTbl.getSerName() == null) {
+      LOG.info("3288 in DDLTask.java");
       if (storageHandler == null) {
         LOG.info("Default to LazySimpleSerDe for table " + crtTbl.getTableName());
         tbl.setSerializationLib(org.apache.hadoop.hive.serde2.lazy.LazySimpleSerDe.class.getName());
@@ -3299,24 +3302,32 @@ public class DDLTask extends Task<DDLWork> implements Serializable {
       tbl.setSerializationLib(crtTbl.getSerName());
     }
 
+    LOG.info("3304 in DDLTask.java");
     if (crtTbl.getFieldDelim() != null) {
       tbl.setSerdeParam(Constants.FIELD_DELIM, crtTbl.getFieldDelim());
       tbl.setSerdeParam(Constants.SERIALIZATION_FORMAT, crtTbl.getFieldDelim());
     }
+    LOG.info("3309 in DDLTask.java");
     if (crtTbl.getFieldEscape() != null) {
       tbl.setSerdeParam(Constants.ESCAPE_CHAR, crtTbl.getFieldEscape());
     }
 
+    LOG.info("3314 in DDLTask.java");
     if (crtTbl.getCollItemDelim() != null) {
       tbl.setSerdeParam(Constants.COLLECTION_DELIM, crtTbl.getCollItemDelim());
     }
+
+    LOG.info("3319 in DDLTask.java");
     if (crtTbl.getMapKeyDelim() != null) {
       tbl.setSerdeParam(Constants.MAPKEY_DELIM, crtTbl.getMapKeyDelim());
     }
+
+    LOG.info("3324 in DDLTask.java");
     if (crtTbl.getLineDelim() != null) {
       tbl.setSerdeParam(Constants.LINE_DELIM, crtTbl.getLineDelim());
     }
 
+    LOG.info("3329 in DDLTask.java");
     if (crtTbl.getSerdeProps() != null) {
       Iterator<Entry<String, String>> iter = crtTbl.getSerdeProps().entrySet()
         .iterator();
@@ -3326,22 +3337,32 @@ public class DDLTask extends Task<DDLWork> implements Serializable {
       }
     }
 
+    LOG.info("3339 in DDLTask.java");
     if (crtTbl.getCols() != null) {
       tbl.setFields(crtTbl.getCols());
     }
+    
+    LOG.info("3344 in DDLTask.java");
     if (crtTbl.getBucketCols() != null) {
       tbl.setBucketCols(crtTbl.getBucketCols());
     }
+
+    LOG.info("3349 in DDLTask.java");
     if (crtTbl.getSortCols() != null) {
       tbl.setSortCols(crtTbl.getSortCols());
     }
+    
+    LOG.info("3354 in DDLTask.java");
     if (crtTbl.getComment() != null) {
       tbl.setProperty("comment", crtTbl.getComment());
     }
+
+    LOG.info("3359 in DDLTask.java");
     if (crtTbl.getLocation() != null) {
       tbl.setDataLocation(new Path(crtTbl.getLocation()).toUri());
     }
 
+    LOG.info("3364 in DDLTask.java");
     tbl.setInputFormatClass(crtTbl.getInputFormat());
     tbl.setOutputFormatClass(crtTbl.getOutputFormat());
 
@@ -3350,6 +3371,7 @@ public class DDLTask extends Task<DDLWork> implements Serializable {
     tbl.getTTable().getSd().setOutputFormat(
       tbl.getOutputFormatClass().getName());
 
+    LOG.info("3373 in DDLTask.java");
     if (crtTbl.isExternal()) {
       tbl.setProperty("EXTERNAL", "TRUE");
       tbl.setTableType(TableType.EXTERNAL_TABLE);
@@ -3360,6 +3382,7 @@ public class DDLTask extends Task<DDLWork> implements Serializable {
     // optimize some group-by queries. Note that, the order does not matter as
     // long as it in the first
     // 'n' columns where 'n' is the length of the bucketed columns.
+    LOG.info("3384 in DDLTask.java");
     if ((tbl.getBucketCols() != null) && (tbl.getSortCols() != null)) {
       List<String> bucketCols = tbl.getBucketCols();
       List<Order> sortCols = tbl.getSortCols();
@@ -3394,8 +3417,11 @@ public class DDLTask extends Task<DDLWork> implements Serializable {
     }
 
     // create the table
+    LOG.info("3419 in DDLTask.java");
     db.createTable(tbl, crtTbl.getIfNotExists());
+    LOG.info("3421 in DDLTask.java");
     work.getOutputs().add(new WriteEntity(tbl));
+    LOG.info("3422 in DDLTask.java");
     return 0;
   }
 

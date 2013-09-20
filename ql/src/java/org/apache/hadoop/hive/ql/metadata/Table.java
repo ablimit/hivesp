@@ -154,6 +154,7 @@ public class Table implements Serializable {
 
   public void checkValidity() throws HiveException {
     // check for validity
+    LOG.info("157 in Table.java");
     String name = tTable.getTableName();
     if (null == name || name.length() == 0
         || !MetaStoreUtils.validateName(name)) {
@@ -163,18 +164,23 @@ public class Table implements Serializable {
       throw new HiveException(
           "at least one column must be specified for the table");
     }
+    LOG.info("167 in Table.java");
     if (!isView()) {
+      LOG.info("169 in Table.java");
       if (null == getDeserializerFromMetaStore()) {
         throw new HiveException("must specify a non-null serDe");
       }
+      LOG.info("173 in Table.java");
       if (null == getInputFormatClass()) {
         throw new HiveException("must specify an InputFormat class");
       }
+      LOG.info("177 in Table.java");
       if (null == getOutputFormatClass()) {
         throw new HiveException("must specify an OutputFormat class");
       }
     }
 
+    LOG.info("180 in Table.java");
     if (isView()) {
       assert(getViewOriginalText() != null);
       assert(getViewExpandedText() != null);
@@ -249,18 +255,23 @@ public class Table implements Serializable {
   }
 
   final public Deserializer getDeserializer() {
+    LOG.info("258 in Table.java");
     if (deserializer == null) {
       deserializer = getDeserializerFromMetaStore();
+      LOG.info("261 in Table.java");
     }
     return deserializer;
   }
 
   private Deserializer getDeserializerFromMetaStore() {
+    LOG.info("262 in Table.java");
     try {
       return MetaStoreUtils.getDeserializer(Hive.get().getConf(), tTable);
     } catch (MetaException e) {
+      LOG.info("270 in Table.java");
       throw new RuntimeException(e);
     } catch (HiveException e) {
+      LOG.info("273 in Table.java");
       throw new RuntimeException(e);
     }
   }
@@ -281,6 +292,7 @@ public class Table implements Serializable {
   }
 
   final public Class<? extends InputFormat> getInputFormatClass() {
+    LOG.info("167 in Table.java");
     if (inputFormatClass == null) {
       try {
         String className = tTable.getSd().getInputFormat();
@@ -302,6 +314,7 @@ public class Table implements Serializable {
 
   final public Class<? extends HiveOutputFormat> getOutputFormatClass() {
     // Replace FileOutputFormat for backward compatibility
+    LOG.info("310 in Table.java");
 
     if (outputFormatClass == null) {
       try {

@@ -126,16 +126,22 @@ public abstract class Task<T extends Serializable> implements Serializable, Node
    */
   public int executeTask() {
     try {
+      LOG.info("129 in Task.java");
       SessionState ss = SessionState.get();
       this.setStarted();
+      LOG.info("132 in Task.java");
       if (ss != null) {
+        LOG.info("134 in Task.java");
         ss.getHiveHistory().logPlanProgress(queryPlan);
       }
+      LOG.info("137 in Task.java");
       int retval = execute(driverContext);
+      LOG.info("138 in Task.java");
       this.setDone();
       if (ss != null) {
         ss.getHiveHistory().logPlanProgress(queryPlan);
       }
+      LOG.info("143 in Task.java");
       return retval;
     } catch (IOException e) {
       throw new RuntimeException(e.getMessage());

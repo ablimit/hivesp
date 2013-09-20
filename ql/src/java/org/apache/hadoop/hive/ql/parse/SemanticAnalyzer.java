@@ -7876,6 +7876,7 @@ public class SemanticAnalyzer extends BaseSemanticAnalyzer {
 
     // I want to see what I did to the tree
     LOG.info("Tree Shape After Spatial Analyze: "+ child.dump());
+    LOG.info("7879 ast.getToken().getType():" + ast.getToken().getType());
 
     // analyze create table command
     if (ast.getToken().getType() == HiveParser.TOK_CREATETABLE) {
@@ -8346,6 +8347,13 @@ public class SemanticAnalyzer extends BaseSemanticAnalyzer {
    */
   private ASTNode analyzeCreateTable(ASTNode ast, QB qb)
       throws SemanticException {
+    LOG.info("8349 starting to analyzeCreateTable");
+    LOG.info("8351 (ASTNode)ast.getChild(0):" + (ASTNode)ast.getChild(0));
+    LOG.info("tableNameNode.getToken().getType()):" + ((ASTNode)ast.getChild(0)).getToken().getType());
+    LOG.info("HiveParser.TOK_TABNAME:" + HiveParser.TOK_TABNAME);
+    LOG.info("tableNameNode.getChildCount():" + ((ASTNode)ast.getChild(0)).getChildCount());
+
+
     String tableName = getUnescapedName((ASTNode)ast.getChild(0));
     String likeTableName = null;
     List<FieldSchema> cols = new ArrayList<FieldSchema>();

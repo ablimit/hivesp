@@ -512,21 +512,27 @@ public class Hive {
    * @throws HiveException
    */
   public void createTable(Table tbl, boolean ifNotExists) throws HiveException {
+    LOG.info("515 in Hive.java");
     try {
       if (tbl.getDbName() == null || "".equals(tbl.getDbName().trim())) {
         tbl.setDbName(getCurrentDatabase());
       }
+      LOG.info("520 in Hive.java");
       if (tbl.getCols().size() == 0) {
         tbl.setFields(MetaStoreUtils.getFieldsFromDeserializer(tbl.getTableName(),
             tbl.getDeserializer()));
       }
+      LOG.info("525 in Hive.java");
       tbl.checkValidity();
+      LOG.info("527 in Hive.java");
       if (tbl.getParameters() != null) {
         tbl.getParameters().remove(Constants.DDL_TIME);
       }
+      LOG.info("530 in Hive.java");
       org.apache.hadoop.hive.metastore.api.Table tTbl = tbl.getTTable();
       PrincipalPrivilegeSet principalPrivs = new PrincipalPrivilegeSet();
       SessionState ss = SessionState.get();
+      LOG.info("534 in Hive.java");
       if (ss != null) {
         CreateTableAutomaticGrant grants = ss.getCreateTableGrants();
         if (grants != null) {
@@ -536,6 +542,7 @@ public class Hive {
           tTbl.setPrivileges(principalPrivs);
         }
       }
+      LOG.info("544 in Hive.java");
       getMSC().createTable(tTbl);
     } catch (AlreadyExistsException e) {
       if (!ifNotExists) {

@@ -30,6 +30,7 @@ import org.apache.hadoop.hive.serde2.io.ByteWritable;
 import org.apache.hadoop.hive.serde2.io.DoubleWritable;
 import org.apache.hadoop.hive.serde2.io.ShortWritable;
 import org.apache.hadoop.hive.serde2.io.TimestampWritable;
+import org.apache.hadoop.hive.serde2.io.GeometryWritable;
 import org.apache.hadoop.hive.serde2.lazy.LazyInteger;
 import org.apache.hadoop.hive.serde2.lazy.LazyLong;
 import org.apache.hadoop.hive.serde2.objectinspector.ObjectInspector;
@@ -46,6 +47,8 @@ import org.apache.hadoop.io.Text;
 import org.apache.hadoop.io.Writable;
 import org.apache.hadoop.io.WritableUtils;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 /**
  * ObjectInspectorFactory is the primary way to create new ObjectInspector
  * instances.
@@ -55,6 +58,7 @@ import org.apache.hadoop.io.WritableUtils;
  */
 public final class PrimitiveObjectInspectorUtils {
 
+  protected static final Log LOG = LogFactory.getLog("PrimitiveObjectInspectorUtils.java");
   /**
    * TypeEntry stores information about a Hive Primitive TypeInfo.
    */
@@ -139,6 +143,7 @@ public final class PrimitiveObjectInspectorUtils {
       primitiveWritableClassToTypeEntry.put(t.primitiveWritableClass, t);
     }
     if (t.typeName != null) {
+      LOG.info("145 in PrimitiveObjectInspectorUtils.java | t.typeName = " + t.typeName + "; t = " + t);
       typeNameToTypeEntry.put(t.typeName, t);
     }
   }
@@ -178,6 +183,9 @@ public final class PrimitiveObjectInspectorUtils {
   public static final PrimitiveTypeEntry timestampTypeEntry = new PrimitiveTypeEntry(
       PrimitiveCategory.TIMESTAMP, Constants.TIMESTAMP_TYPE_NAME, null,
       Object.class, TimestampWritable.class);
+  public static final PrimitiveTypeEntry geometryTypeEntry = new PrimitiveTypeEntry(
+      PrimitiveCategory.GEOMETRY, Constants.GEOMETRY_TYPE_NAME, null,
+      Object.class, GeometryWritable.class);
 
   // The following is a complex type for special handling
   public static final PrimitiveTypeEntry unknownTypeEntry = new PrimitiveTypeEntry(
@@ -195,6 +203,7 @@ public final class PrimitiveObjectInspectorUtils {
     registerType(byteTypeEntry);
     registerType(shortTypeEntry);
     registerType(timestampTypeEntry);
+    registerType(geometryTypeEntry);
     registerType(unknownTypeEntry);
   }
 
@@ -302,6 +311,8 @@ public final class PrimitiveObjectInspectorUtils {
    * Get the TypeEntry for a Primitive Writable Class.
    */
   public static PrimitiveTypeEntry getTypeEntryFromTypeName(String typeName) {
+    LOG.info("309 in PrimitiveObjectInspectorUtils.java | typeName = " + typeName);
+    LOG.info("310 in PrimitiveObjectInspectorUtils.java | typeNameToTypeEntry.get(typeName) = " + typeNameToTypeEntry.get(typeName));
     return typeNameToTypeEntry.get(typeName);
   }
 

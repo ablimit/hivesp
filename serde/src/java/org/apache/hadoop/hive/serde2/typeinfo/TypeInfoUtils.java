@@ -42,11 +42,15 @@ import org.apache.hadoop.hive.serde2.objectinspector.primitive.PrimitiveObjectIn
 import org.apache.hadoop.hive.serde2.objectinspector.primitive.PrimitiveObjectInspectorUtils;
 import org.apache.hadoop.hive.serde2.objectinspector.primitive.PrimitiveObjectInspectorUtils.PrimitiveTypeEntry;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 /**
  * TypeInfoUtils.
  *
  */
 public final class TypeInfoUtils {
+
+  protected static final Log LOG = LogFactory.getLog("TypeInfoUtils.java");
 
   private TypeInfoUtils() {
     // prevent instantiation
@@ -289,7 +293,16 @@ public final class TypeInfoUtils {
         throw new IllegalArgumentException("Error: " + item
             + " expected at the end of '" + typeInfoString + "'");
       }
+
+      LOG.info("297 in TypeInfoUtils.java");
       Token t = typeInfoTokens.get(iToken);
+      LOG.info("299 in TypeInfoUtils.java | token t = " + t);
+      LOG.info("300 in TypeInfoUtils.java | token t.text = " + t.text);
+      LOG.info("301 in TypeInfoUtils.java | item = " + item);
+      if (null == PrimitiveObjectInspectorUtils.getTypeEntryFromTypeName(t.text)) {
+        LOG.info("303 in TypeInfoUtils.java | getTypeEntryFromTypeName(t.text) == null !!!");
+      }
+
       if (item.equals("type")) {
         if (!Constants.LIST_TYPE_NAME.equals(t.text)
             && !Constants.MAP_TYPE_NAME.equals(t.text)
@@ -298,9 +311,9 @@ public final class TypeInfoUtils {
             && null == PrimitiveObjectInspectorUtils
             .getTypeEntryFromTypeName(t.text)
             && !t.text.equals(alternative)) {
-          throw new IllegalArgumentException("Error: " + item
+          throw new IllegalArgumentException("!!!!Error: " + item
               + " expected at the position " + t.position + " of '"
-              + typeInfoString + "' but '" + t.text + "' is found.");
+              + typeInfoString + "' but '" + t.text + "' is found.---------------");
         }
       } else if (item.equals("name")) {
         if (!t.isType && !t.text.equals(alternative)) {

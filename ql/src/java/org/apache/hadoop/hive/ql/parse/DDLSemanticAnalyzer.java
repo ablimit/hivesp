@@ -141,6 +141,7 @@ public class DDLSemanticAnalyzer extends BaseSemanticAnalyzer {
     TokenToTypeName.put(HiveParser.TOK_DATE, Constants.DATE_TYPE_NAME);
     TokenToTypeName.put(HiveParser.TOK_DATETIME, Constants.DATETIME_TYPE_NAME);
     TokenToTypeName.put(HiveParser.TOK_TIMESTAMP, Constants.TIMESTAMP_TYPE_NAME);
+    TokenToTypeName.put(HiveParser.TOK_GEOMETRY, Constants.GEOMETRY_TYPE_NAME);
   }
 
   public static String getTypeName(int token) throws SemanticException {
@@ -183,6 +184,10 @@ public class DDLSemanticAnalyzer extends BaseSemanticAnalyzer {
 
   @Override
   public void analyzeInternal(ASTNode ast) throws SemanticException {
+
+    LOG.info("188 Starting analyzeInternal in DDLSemanticAnalyzer.java");
+    LOG.info("ast.getToken():" + ast.getToken());
+    LOG.info("ast.getToken().getType():" + ast.getToken().getType());
 
     switch(ast.getToken().getType()) {
     case HiveParser.TOK_ALTERTABLE_PARTITION: {
@@ -719,6 +724,7 @@ public class DDLSemanticAnalyzer extends BaseSemanticAnalyzer {
   }
 
   private void analyzeCreateIndex(ASTNode ast) throws SemanticException {
+    LOG.info("727 starting analyzeCreateIndex in DDLSemanticAnalyzer.java");
     String indexName = unescapeIdentifier(ast.getChild(0).getText());
     String typeName = unescapeSQLString(ast.getChild(1).getText());
     String tableName = getUnescapedName((ASTNode)ast.getChild(2));

@@ -315,6 +315,9 @@ public abstract class BaseSemanticAnalyzer {
    * @return if DB name is give, db.tab is returned. Otherwise, tab.
    */
   public static String getUnescapedName(ASTNode tableNameNode) {
+    //LOG.info("318 tableNameNode.getToken().getType():" + tableNameNode.getToken().getType());
+    //LOG.info("319 HiveParser.TOK_TABNAME" + HiveParser.TOK_TABNAME);
+
     if (tableNameNode.getToken().getType() == HiveParser.TOK_TABNAME) {
       if (tableNameNode.getChildCount() == 2) {
         String dbName = unescapeIdentifier(tableNameNode.getChild(0).getText());

@@ -412,8 +412,18 @@ public class Driver implements CommandProcessor {
       ctx.setHDFSCleanup(true);
 
       ParseDriver pd = new ParseDriver();
+      LOG.info("415 create new ParseDriver object in Driver.java");
+
       ASTNode tree = pd.parse(command, ctx);
+      LOG.info("418 return from pd.parse(command, ctx) in Driver.java");
+      LOG.info("419 ASTNode tree:" + tree);
+      LOG.info("420 ASTNode tree.getToken():" + tree.getToken());
+      //LOG.info("421 ASTNode tree.getToken().getType():" + tree.getToken().getType());
+
       tree = ParseUtils.findRootNonNullToken(tree);
+      LOG.info("424 ASTNode tree:" + tree);
+      LOG.info("425 ASTNode tree.getToken():" + tree.getToken());
+      LOG.info("426 ASTNode tree.getToken().getType():" + tree.getToken().getType());
 
       BaseSemanticAnalyzer sem = SemanticAnalyzerFactory.get(conf, tree);
       List<AbstractSemanticAnalyzerHook> saHooks =
@@ -1035,12 +1045,14 @@ public class Driver implements CommandProcessor {
     String queryId = plan.getQueryId();
     String queryStr = plan.getQueryStr();
 
+    LOG.info("1048 in Driver.java | queryID:" + queryId);
+
     conf.setVar(HiveConf.ConfVars.HIVEQUERYID, queryId);
     conf.setVar(HiveConf.ConfVars.HIVEQUERYSTRING, queryStr);
     maxthreads = HiveConf.getIntVar(conf, HiveConf.ConfVars.EXECPARALLETHREADNUMBER);
 
     try {
-      LOG.info("Starting command: " + queryStr);
+      LOG.info("1053 in Driver.java Starting command: " + queryStr);
 
       plan.setStarted();
 
@@ -1054,6 +1066,7 @@ public class Driver implements CommandProcessor {
       HookContext hookContext = new HookContext(plan, conf, ctx.getPathToCS());
       hookContext.setHookType(HookContext.HookType.PRE_EXEC_HOOK);
 
+      LOG.info("1069 in Driver.java");
       for (Hook peh : getHooks(HiveConf.ConfVars.PREEXECHOOKS)) {
         if (peh instanceof ExecuteWithHookContext) {
           perfLogger.PerfLogBegin(LOG, PerfLogger.PRE_HOOK + peh.getClass().getName());
@@ -1071,7 +1084,7 @@ public class Driver implements CommandProcessor {
         }
       }
 
-
+      LOG.info("1087 in Driver.java");
       int jobs = Utilities.getMRTasks(plan.getRootTasks()).size();
       if (jobs > 0) {
         console.printInfo("Total MapReduce jobs = " + jobs);
@@ -1081,6 +1094,7 @@ public class Driver implements CommandProcessor {
             String.valueOf(jobs));
         SessionState.get().getHiveHistory().setIdToTableMap(plan.getIdToTableNameMap());
       }
+      LOG.info("1097 in Driver.java");
       String jobname = Utilities.abbreviate(queryStr, maxlen - 6);
 
       // A runtime that launches runnable tasks as separate Threads through
@@ -1099,6 +1113,7 @@ public class Driver implements CommandProcessor {
       SessionState.get().setStackTraces(new HashMap<String, List<List<String>>>());
       SessionState.get().setLocalMapRedErrors(new HashMap<String, List<String>>());
 
+      LOG.info("1116 in Driver.java");
       // Add root Tasks to runnable
       for (Task<? extends Serializable> tsk : plan.getRootTasks()) {
         driverCxt.addToRunnable(tsk);
@@ -1106,19 +1121,25 @@ public class Driver implements CommandProcessor {
 
       perfLogger.PerfLogEnd(LOG, PerfLogger.TIME_TO_SUBMIT);
       // Loop while you either have tasks running, or tasks queued up
+      LOG.info("1124 in Driver.java");
       while (running.size() != 0 || runnable.peek() != null) {
+        LOG.info("1126 in Driver.java");
         // Launch upto maxthreads tasks
         while (runnable.peek() != null && running.size() < maxthreads) {
+          LOG.info("1129 in Driver.java");
           Task<? extends Serializable> tsk = runnable.remove();
+          LOG.info("1131 in Driver.java");
           launchTask(tsk, queryId, noName, running, jobname, jobs, driverCxt);
         }
 
+        LOG.info("1132 in Driver.java");
         // poll the Tasks to see which one completed
         TaskResult tskRes = pollTasks(running.keySet());
         TaskRunner tskRun = running.remove(tskRes);
         Task<? extends Serializable> tsk = tskRun.getTask();
         hookContext.addCompleteTask(tskRun);
 
+        LOG.info("1139 in Driver.java");
         int exitVal = tskRes.getExitVal();
         if (exitVal != 0) {
           if (tsk.ifRetryCmdWhenFail()) {
@@ -1130,6 +1151,7 @@ public class Driver implements CommandProcessor {
             ctx.restoreOriginalTracker();
             throw new CommandNeedRetryException();
           }
+          LOG.info("1151 in Driver.java");
           Task<? extends Serializable> backupTask = tsk.getAndInitBackupTask();
           if (backupTask != null) {
             errorMessage = "FAILED: Execution Error, return code " + exitVal + " from "
@@ -1142,6 +1164,7 @@ public class Driver implements CommandProcessor {
             errorMessage = "ATTEMPT: Execute BackupTask: " + backupTask.getClass().getName();
             console.printError(errorMessage);
 
+            LOG.info("1164 in Driver.java");
             // add backup task to runnable
             if (DriverContext.isLaunchable(backupTask)) {
               driverCxt.addToRunnable(backupTask);
@@ -1149,6 +1172,7 @@ public class Driver implements CommandProcessor {
             continue;
 
           } else {
+            LOG.info("1172 in Driver.java");
             hookContext.setHookType(HookContext.HookType.ON_FAILURE_HOOK);
             // Get all the failure execution hooks and execute them.
             for (Hook ofh : getHooks(HiveConf.ConfVars.ONFAILUREHOOKS)) {
@@ -1159,6 +1183,7 @@ public class Driver implements CommandProcessor {
               perfLogger.PerfLogEnd(LOG, PerfLogger.FAILURE_HOOK + ofh.getClass().getName());
             }
 
+            LOG.info("1183 in Driver.java");
             errorMessage = "FAILED: Execution Error, return code " + exitVal + " from "
                 + tsk.getClass().getName();
             ErrorMsg em = ErrorMsg.getErrorMsg(exitVal);
@@ -1172,10 +1197,13 @@ public class Driver implements CommandProcessor {
             }
             // in case we decided to run everything in local mode, restore the
             // the jobtracker setting to its initial value
+            LOG.info("1197 in Driver.java");
             ctx.restoreOriginalTracker();
             return exitVal;
           }
         }
+      
+        LOG.info("1196 in Driver.java");
 
         if (SessionState.get() != null) {
           SessionState.get().getHiveHistory().setTaskProperty(queryId, tsk.getId(),
@@ -1183,6 +1211,7 @@ public class Driver implements CommandProcessor {
           SessionState.get().getHiveHistory().endTask(queryId, tsk);
         }
 
+        LOG.info("1204 in Driver.java");
         if (tsk.getChildTasks() != null) {
           for (Task<? extends Serializable> child : tsk.getChildTasks()) {
             if (DriverContext.isLaunchable(child)) {
@@ -1192,10 +1221,12 @@ public class Driver implements CommandProcessor {
         }
       }
 
+      LOG.info("1214 in Driver.java");
       // in case we decided to run everything in local mode, restore the
       // the jobtracker setting to its initial value
       ctx.restoreOriginalTracker();
 
+      LOG.info("1219 in Driver.java");
       // remove incomplete outputs.
       // Some incomplete outputs may be added at the beginning, for eg: for dynamic partitions.
       // remove them
@@ -1206,10 +1237,12 @@ public class Driver implements CommandProcessor {
         }
       }
 
+      LOG.info("1230 in Driver.java");
       for (WriteEntity output : remOutputs) {
         plan.getOutputs().remove(output);
       }
 
+      LOG.info("1232 in Driver.java");
       hookContext.setHookType(HookContext.HookType.POST_EXEC_HOOK);
       // Get all the post execution hooks and execute them.
       for (Hook peh : getHooks(HiveConf.ConfVars.POSTEXECHOOKS)) {
@@ -1305,27 +1338,35 @@ public class Driver implements CommandProcessor {
   public void launchTask(Task<? extends Serializable> tsk, String queryId, boolean noName,
       Map<TaskResult, TaskRunner> running, String jobname, int jobs, DriverContext cxt) {
 
+    LOG.info("1341 in Driver.java");
     if (SessionState.get() != null) {
       SessionState.get().getHiveHistory().startTask(queryId, tsk, tsk.getClass().getName());
     }
+    LOG.info("1345 in Driver.java");
     if (tsk.isMapRedTask() && !(tsk instanceof ConditionalTask)) {
       if (noName) {
         conf.setVar(HiveConf.ConfVars.HADOOPJOBNAME, jobname + "(" + tsk.getId() + ")");
       }
+      LOG.info("1350 in Driver.java");
       cxt.incCurJobNo(1);
       console.printInfo("Launching Job " + cxt.getCurJobNo() + " out of " + jobs);
     }
+    LOG.info("1354 in Driver.java");
     tsk.initialize(conf, plan, cxt);
     TaskResult tskRes = new TaskResult();
     TaskRunner tskRun = new TaskRunner(tsk, tskRes);
 
     // Launch Task
+    LOG.info("1360 in Driver.java");
     if (HiveConf.getBoolVar(conf, HiveConf.ConfVars.EXECPARALLEL) && tsk.isMapRedTask()) {
       // Launch it in the parallel mode, as a separate thread only for MR tasks
+      LOG.info("1363 in Driver.java");
       tskRun.start();
     } else {
+      LOG.info("1366 in Driver.java");
       tskRun.runSequential();
     }
+    LOG.info("1369 in Driver.java");
     running.put(tskRes, tskRun);
     return;
   }

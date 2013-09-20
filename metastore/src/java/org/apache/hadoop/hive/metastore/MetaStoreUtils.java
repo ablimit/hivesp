@@ -195,16 +195,24 @@ public class MetaStoreUtils {
   static public Deserializer getDeserializer(Configuration conf,
       org.apache.hadoop.hive.metastore.api.Table table) throws MetaException {
     String lib = table.getSd().getSerdeInfo().getSerializationLib();
+
+    LOG.info("198 in MetaStoreUtils.java");
     if (lib == null) {
+      LOG.info("201 in MetaStoreUtils.java");
       return null;
     }
     try {
+      LOG.info("205 in MetaStoreUtils.java");
       Deserializer deserializer = SerDeUtils.lookupDeserializer(lib);
+      LOG.info("207 in MetaStoreUtils.java");
       deserializer.initialize(conf, MetaStoreUtils.getSchema(table));
+      LOG.info("209 in MetaStoreUtils.java");
       return deserializer;
     } catch (RuntimeException e) {
+      LOG.info("212 in MetaStoreUtils.java");
       throw e;
     } catch (Exception e) {
+      LOG.info("215 in MetaStoreUtils.java");
       LOG.error("error in initSerDe: " + e.getClass().getName() + " "
           + e.getMessage());
       MetaStoreUtils.printStackTrace(e);
@@ -234,6 +242,7 @@ public class MetaStoreUtils {
     try {
       Deserializer deserializer = SerDeUtils.lookupDeserializer(lib);
       deserializer.initialize(conf, MetaStoreUtils.getSchema(part, table));
+      LOG.info("245 in MetaStoreUtils.java");
       return deserializer;
     } catch (RuntimeException e) {
       throw e;
@@ -374,6 +383,9 @@ public class MetaStoreUtils {
     typeToThriftTypeMap
         .put(org.apache.hadoop.hive.serde.Constants.TIMESTAMP_TYPE_NAME,
             "timestamp");
+    typeToThriftTypeMap
+        .put(org.apache.hadoop.hive.serde.Constants.GEOMETRY_TYPE_NAME,
+            "geometry");
   }
 
   /**
@@ -413,6 +425,7 @@ public class MetaStoreUtils {
       List<FieldSchema> fieldSchemas) {
     StringBuilder ddl = new StringBuilder();
     ddl.append(getDDLFromFieldSchema(structName, fieldSchemas));
+    LOG.info("424 in MetaStoreUtils.java");
     ddl.append('#');
     StringBuilder colnames = new StringBuilder();
     StringBuilder coltypes = new StringBuilder();
@@ -455,12 +468,14 @@ public class MetaStoreUtils {
     }
     ddl.append("}");
 
+    LOG.info("466 in MetaStoreUtils.java");
     LOG.info("DDL: " + ddl);
     return ddl.toString();
   }
 
   public static Properties getSchema(
       org.apache.hadoop.hive.metastore.api.Table table) {
+    LOG.info("475 in MetaStoreUtils.java");
     return MetaStoreUtils.getSchema(table.getSd(), table.getSd(), table
         .getParameters(), table.getDbName(), table.getTableName(), table.getPartitionKeys());
   }
@@ -468,6 +483,7 @@ public class MetaStoreUtils {
   public static Properties getSchema(
       org.apache.hadoop.hive.metastore.api.Partition part,
       org.apache.hadoop.hive.metastore.api.Table table) {
+    LOG.info("483 in MetaStoreUtils.java");
     return MetaStoreUtils.getSchema(part.getSd(), table.getSd(), table
         .getParameters(), table.getDbName(), table.getTableName(), table.getPartitionKeys());
   }
@@ -593,7 +609,9 @@ public class MetaStoreUtils {
     if (inputFormat == null || inputFormat.length() == 0) {
       inputFormat = org.apache.hadoop.mapred.SequenceFileInputFormat.class
         .getName();
+      LOG.info("609 in MetaStoreUtils.java | inputFormat = " + inputFormat);
     }
+
     schema.setProperty(
       org.apache.hadoop.hive.metastore.api.Constants.FILE_INPUT_FORMAT,
       inputFormat);
@@ -601,6 +619,7 @@ public class MetaStoreUtils {
     if (outputFormat == null || outputFormat.length() == 0) {
       outputFormat = org.apache.hadoop.mapred.SequenceFileOutputFormat.class
         .getName();
+      LOG.info("619 in MetaStoreUtils.java | outputFormat = " + outputFormat);
     }
     schema.setProperty(
       org.apache.hadoop.hive.metastore.api.Constants.FILE_OUTPUT_FORMAT,
@@ -609,11 +628,13 @@ public class MetaStoreUtils {
     schema.setProperty(
         org.apache.hadoop.hive.metastore.api.Constants.META_TABLE_NAME,
         databaseName + "." + tableName);
+    LOG.info("628 in MetaStoreUtils.java | databaseName = " + databaseName + "; tableName = " + tableName);
 
     if (sd.getLocation() != null) {
       schema.setProperty(
           org.apache.hadoop.hive.metastore.api.Constants.META_TABLE_LOCATION,
           sd.getLocation());
+      LOG.info("633 in MetaStoreUtils.java | location = " + sd.getLocation());
     }
     schema.setProperty(
         org.apache.hadoop.hive.metastore.api.Constants.BUCKET_COUNT, Integer
@@ -626,6 +647,7 @@ public class MetaStoreUtils {
     if (sd.getSerdeInfo() != null) {
       for (Map.Entry<String,String> param : sd.getSerdeInfo().getParameters().entrySet()) {
         schema.put(param.getKey(), (param.getValue() != null) ? param.getValue() : "");
+        LOG.info("647 in MetaStoreUtils.java | param.getKey() = " + param.getKey());
       }
 
       if (sd.getSerdeInfo().getSerializationLib() != null) {
@@ -644,6 +666,8 @@ public class MetaStoreUtils {
       }
       colNameBuf.append(col.getName());
       colTypeBuf.append(col.getType());
+      LOG.info("666 in MetaStoreUtils.java | col.getName() = " + col.getName());
+      LOG.info("667 in MetaStoreUtils.java | col.getType() = " + col.getType());
       first = false;
     }
     String colNames = colNameBuf.toString();
@@ -658,33 +682,44 @@ public class MetaStoreUtils {
       schema.setProperty(
           org.apache.hadoop.hive.serde.Constants.SERIALIZATION_DDL,
           getDDLFromFieldSchema(tableName, sd.getCols()));
+          LOG.info("682 in MetaStoreUtils.java | col.tableName = " + tableName + "; sd.getCols() = " + sd.getCols());
     }
 
     String partString = "";
     String partStringSep = "";
     for (FieldSchema partKey : partitionKeys) {
+      LOG.info("689 in MetaStoreUtils.java | partKey = " + partKey + "; partKey.getName() = " + partKey.getName());
+      LOG.info("690 in MetaStoreUtils.java | partString = " + partString);
       partString = partString.concat(partStringSep);
       partString = partString.concat(partKey.getName());
+      LOG.info("693 in MetaStoreUtils.java");
       if (partStringSep.length() == 0) {
         partStringSep = "/";
       }
     }
+
+    LOG.info("698 in MetaStoreUtils.java");
     if (partString.length() > 0) {
       schema
           .setProperty(
               org.apache.hadoop.hive.metastore.api.Constants.META_TABLE_PARTITION_COLUMNS,
               partString);
+      LOG.info("704 in MetaStoreUtils.java");
     }
 
     if (parameters != null) {
+      LOG.info("708 in MetaStoreUtils.java");
       for (Entry<String, String> e : parameters.entrySet()) {
         // add non-null parameters to the schema
+        LOG.info("711 in MetaStoreUtils.java");
         if ( e.getValue() != null) {
+          LOG.info("713 in MetaStoreUtils.java | e.getKey() = " + e.getKey() + "; e.getValue() = " + e.getValue());
           schema.setProperty(e.getKey(), e.getValue());
         }
       }
     }
 
+    LOG.info("719 in MetaStoreUtils.java");
     return schema;
   }
 

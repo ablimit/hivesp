@@ -21,6 +21,8 @@ package org.apache.hadoop.hive.ql.exec;
 import java.io.Serializable;
 
 import org.apache.hadoop.hive.ql.session.SessionState;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 
 /**
  * TaskRunner implementation.
@@ -30,6 +32,8 @@ public class TaskRunner extends Thread {
   protected Task<? extends Serializable> tsk;
   protected TaskResult result;
   protected SessionState ss;
+
+  static final private Log LOG = LogFactory.getLog(TaskRunner.class.getName());
 
   public TaskRunner(Task<? extends Serializable> tsk, TaskResult result) {
     this.tsk = tsk;
@@ -52,13 +56,17 @@ public class TaskRunner extends Thread {
    */
 
   public void runSequential() {
+    LOG.info("55 in TaskRunner.java");
     int exitVal = -101;
     try {
+      LOG.info("58 in TaskRunner.java");
       exitVal = tsk.executeTask();
     } catch (Throwable t) {
       t.printStackTrace();
     }
+    LOG.info("63 in TaskRunner.java");
     result.setExitVal(exitVal);
+    LOG.info("65 in TaskRunner.java");
   }
 
 }

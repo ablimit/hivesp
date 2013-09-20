@@ -116,6 +116,7 @@ public class ParseDriver {
     xlateMap.put("KW_DATE", "DATE");
     xlateMap.put("KW_DATETIME", "DATETIME");
     xlateMap.put("KW_TIMESTAMP", "TIMESTAMP");
+    xlateMap.put("KW_GEOMETRY", "GEOMETRY");
     xlateMap.put("KW_STRING", "STRING");
     xlateMap.put("KW_BINARY", "BINARY");
     xlateMap.put("KW_ARRAY", "ARRAY");
@@ -428,7 +429,11 @@ public class ParseDriver {
     LOG.info("Parsing command: " + command);
 
     HiveLexerX lexer = new HiveLexerX(new ANTLRNoCaseStringStream(command));
+    LOG.info("432 lexer in ParseDriver.java:" + lexer);
+
     TokenRewriteStream tokens = new TokenRewriteStream(lexer);
+    LOG.info("435 tokens in ParseDriver.java:" + tokens);
+
     if (ctx != null) {
       ctx.setTokenRewriteStream(tokens);
     }
