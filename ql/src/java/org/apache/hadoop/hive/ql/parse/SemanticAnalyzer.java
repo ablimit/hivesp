@@ -4915,7 +4915,8 @@ public class SemanticAnalyzer extends BaseSemanticAnalyzer {
 
     // RESQUE prepration
     // String command =  "'/Users/hixiaoxi/Documents/GitHub/hivesp/resque/dummy 2 2 '";//"/usr/bin/tee /tmp/output.txt - ";
-    String command =  "'/Users/hixiaoxi/Documents/GitHub/hivesp/resque/xiling/task4/resque '" + spatialJoinType + "' 10 10'";
+    // String command =  "'/Users/hixiaoxi/Documents/GitHub/hivesp/resque/xiling/task4/resque '" + spatialJoinType + "' 10 10'";
+    String command = "'" + conf.getVar(HiveConf.ConfVars.HIVESPATIALPATH) + " '" +spatialJoinType + "' 10 10'";
     TableDesc outInfo = null;
     TableDesc [] inInfo = new TableDesc [right.length];
     TableDesc errInfo;
