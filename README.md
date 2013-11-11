@@ -1,5 +1,5 @@
-HadoopGIS @0.1.0@
-======================
+HadoopGIS V0.1.0
+===========
 
 HadoopGIS is a scalable and high performance spatial data warehousing 
 system for running large scale spatial queries on Hadoop. Hadoop-GIS 
@@ -19,7 +19,7 @@ HiveSP defines a simple SQL-like query language, that enables
 users familiar with SQL to query large spatial data. 
 
 General Info
-============
+--------
 
 For the latest information about HadoopGIS, please visit out website at:
 
@@ -28,7 +28,7 @@ For the latest information about HadoopGIS, please visit out website at:
 
 
 Requirements
-============
+--------
 
 - Java 1.6
 
@@ -40,7 +40,7 @@ Requirements
 
 
 Contributing
-============
+--------
 
 1. Fork it.
 2. Create a branch (`git checkout -b my_hivesp`)
@@ -51,7 +51,7 @@ Contributing
 
 
 Licence
-============
+--------
 All Hadopo-GIS software is freely available, and all source code 
 is available under GNU public [copyleft](http://www.gnu.org/copyleft/ "copyleft") licenses.
 
