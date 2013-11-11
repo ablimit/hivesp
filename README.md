@@ -46,8 +46,8 @@ Contributing
 2. Create a branch (`git checkout -b my_hivesp`)
 3. Commit your changes (`git commit -am "Added ST_KNN"`)
 4. Push to the branch (`git push origin my_hivesp`)
-5. Open a [Pull Request][1]
-6. Enjoy a refreshing Turkish Tea and wait
+5. Open a Pull Request
+6. Enjoy a refreshing Turkish tea and wait
 
 
 Licence
