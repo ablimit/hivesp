@@ -1,68 +1,30 @@
-Apache Hive (TM) @VERSION@
+HadoopGIS @0.1.0@
 ======================
 
-The Apache Hive (TM) data warehouse software facilitates querying and
-managing large datasets residing in distributed storage. Built on top
-of Apache Hadoop (TM), it provides:
+HadoopGIS is a scalable and high performance spatial data warehousing 
+system for running large scale spatial queries on Hadoop. Hadoop-GIS 
+supports multiple types of spatial queries on MapReduce through space 
+partitioning, customizable spatial query engine RESQUE, implicit parallel 
+spatial query execution on MapReduce, and effective methods for amending 
+query results through handling boundary objects on MapReduce. 
+HadoopGIS takes advantage of global partition indexing and customizable 
+on demand local spatial indexing to achieve efficient query processing. 
+HadoopGIS is integrated into Hive to support declarative spatial queries with an integrated architecture. 
 
-* Tools to enable easy data extract/transform/load (ETL)
+HadoopGIS comes with two versions: 
+* Hadoop-GIS library: a set of libraries on performing MapReduce based spatial queries, which can be called from users' applications.
+* HiveSP: we integrate Hadoop-GIS with Hive, to support both structured queries and spatial queries with a unified query language and interface. 
 
-* A mechanism to impose structure on a variety of data formats
-
-* Access to files stored either directly in Apache HDFS (TM) or in other
-  data storage systems such as Apache HBase (TM)
-
-* Query execution via MapReduce
-
-Hive defines a simple SQL-like query language, called QL, that enables
-users familiar with SQL to query the data. At the same time, this
-language also allows programmers who are familiar with the MapReduce
-framework to be able to plug in their custom mappers and reducers to
-perform more sophisticated analysis that may not be supported by the
-built-in capabilities of the language. QL can also be extended with
-custom scalar functions (UDF's), aggregations (UDAF's), and table
-functions (UDTF's).
-
-Please note that Hadoop is a batch processing system and Hadoop jobs
-tend to have high latency and incur substantial overheads in job
-submission and scheduling. Consequently the average latency for Hive
-queries is generally very high (minutes) even when data sets involved
-are very small (say a few hundred megabytes). As a result it cannot be
-compared with systems such as Oracle where analyses are conducted on a
-significantly smaller amount of data but the analyses proceed much
-more iteratively with the response times between iterations being less
-than a few minutes. Hive aims to provide acceptable (but not optimal)
-latency for interactive data browsing, queries over small data sets or
-test queries.
-
-Hive is not designed for online transaction processing and does not
-support real-time queries or row level insert/updates. It is best used
-for batch jobs over large sets of immutable data (like web logs). What
-Hive values most are scalability (scale out with more machines added
-dynamically to the Hadoop cluster), extensibility (with MapReduce
-framework and UDF/UDAF/UDTF), fault-tolerance, and loose-coupling with
-its input formats.
-
+HiveSP defines a simple SQL-like query language, that enables
+users familiar with SQL to query large spatial data. 
 
 General Info
 ============
 
-For the latest information about Hive, please visit out website at:
+For the latest information about HadoopGIS, please visit out website at:
 
-  http://hive.apache.org/
+  http://confluence.cci.emory.edu:8090/display/HadoopGIS/Home
 
-
-Getting Started
-===============
-
-- Installation Instructions and a quick tutorial:
-  https://cwiki.apache.org/confluence/display/Hive/GettingStarted
-
-- A longer tutorial that covers more features of HiveQL:
-  https://cwiki.apache.org/confluence/display/Hive/Tutorial
-
-- The HiveQL Language Manual:
-  https://cwiki.apache.org/confluence/display/Hive/LanguageManual
 
 
 Requirements
@@ -72,38 +34,24 @@ Requirements
 
 - Hadoop 0.20.x (x >= 1)
 
+- GEOS 3.x (x >= 3)
 
-Upgrading from older versions of Hive
-=====================================
-
-- Hive @VERSION@ includes changes to the MetaStore schema. If
-  you are upgrading from an earlier version of Hive it is imperative
-  that you upgrade the MetaStore schema by running the appropriate
-  schema upgrade scripts located in the scripts/metastore/upgrade
-  directory.
-
-  We have provided upgrade scripts for Derby and MySQL databases. If
-  you are using a different database for your MetaStore you will need
-  to provide your own upgrade script.
-
-- Hive @VERSION@ includes new configuration properties. If you
-  are upgrading from an earlier version of Hive it is imperative
-  that you replace all of the old copies of the hive-default.xml
-  configuration file with the new version located in the conf/
-  directory.
+- libspatialindex 1.8.x (x >= 0)
 
 
-Useful mailing lists
-====================
+Contributing
+============
 
-1. user@hive.apache.org - To discuss and ask usage questions. Send an
-   empty email to user-subscribe@hive.apache.org in order to subscribe
-   to this mailing list.
+1. Fork it.
+2. Create a branch (`git checkout -b my_hivesp`)
+3. Commit your changes (`git commit -am "Added ST_KNN"`)
+4. Push to the branch (`git push origin my_hivesp`)
+5. Open a [Pull Request][1]
+6. Enjoy a refreshing Turkish Tea and wait
 
-2. dev@hive.apache.org - For discussions about code, design and features.
-   Send an empty email to dev-subscribe@hive.apache.org in order to
-   subscribe to this mailing list.
 
-3. commits@hive.apache.org - In order to monitor commits to the source
-   repository. Send an empty email to commits-subscribe@hive.apache.org
-   in order to subscribe to this mailing list.
+Licence
+============
+All Hadopo-GIS software is freely available, and all source code 
+is available under GNU public [copyleft](http://www.gnu.org/copyleft/ "copyleft") licenses.
+
