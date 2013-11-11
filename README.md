@@ -1,4 +1,4 @@
-HadoopGIS V0.1.0
+HadoopGIS v 0.1.0
 ===========
 
 HadoopGIS is a scalable and high performance spatial data warehousing 
